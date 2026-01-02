@@ -105,6 +105,7 @@ namespace m5scroll {
      */
     //% blockId=m5scroll_encoder_value
     //% block="encoder value"
+    //% group="Encoder"
     //% weight=90
     //% blockGap=8
     export function getEncoderValue(): number {
@@ -118,6 +119,7 @@ namespace m5scroll {
      */
     //% blockId=m5scroll_inc_encoder_value
     //% block="incremental encoder value"
+    //% group="Encoder"
     //% weight=85
     //% blockGap=8
     //% advanced=true
@@ -132,6 +134,7 @@ namespace m5scroll {
      */
     //% blockId=m5scroll_button_pressed
     //% block="button pressed"
+    //% group="Button"
     //% weight=80
     //% blockGap=8
     export function getButtonStatus(): boolean {
@@ -144,6 +147,7 @@ namespace m5scroll {
      * @param color RGB color value (0x000000 to 0xFFFFFF)
      */
     //% blockId=m5scroll_set_led_color
+    //% group="LED"
     //% block="set LED color $color"
     //% color.shadow="colorNumberPicker"
     //% weight=75
@@ -161,6 +165,7 @@ namespace m5scroll {
      * Set the encoder value
      * @param value encoder value to set
      */
+    //% group="Encoder"
     //% blockId=m5scroll_set_encoder_value
     //% block="set encoder value to $value"
     //% weight=65
@@ -176,6 +181,7 @@ namespace m5scroll {
     /**
      * Reset the encoder value to zero
      */
+    //% group="Encoder"
     //% blockId=m5scroll_reset_encoder
     //% block="reset encoder"
     //% weight=60
@@ -191,6 +197,7 @@ namespace m5scroll {
      */
     //% blockId=m5scroll_on_button
     //% block="on button $pressed"
+    //% group="Button"
     //% draggableParameters="reporter"
     //% weight=55
     //% blockGap=8
@@ -205,6 +212,7 @@ namespace m5scroll {
      */
     //% blockId=m5scroll_on_encoder_change
     //% block="on encoder value $value"
+    //% group="Encoder"
     //% draggableParameters="reporter"
     //% weight=50
     //% blockGap=8
