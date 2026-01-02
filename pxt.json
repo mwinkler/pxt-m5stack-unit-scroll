@@ -1,0 +1,14 @@
+{
+    "name": "m5stack-unit-scroll",
+    "version": "1.0.0",
+    "description": "M5Stack Scroll Unit (STM32F030)",
+    "license": "MIT",
+    "dependencies": {
+        "core": "*"
+    },
+    "files": [
+        "README.md",
+        "main.ts"
+    ],
+    "public": true
+}
