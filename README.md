@@ -134,5 +134,6 @@ MIT
 
 ## References
 
-- [M5Stack Unit Scroll Documentation](https://docs.m5stack.com/en/unit/scroll)
+- [M5Stack Unit Scroll Documentation](https://docs.m5stack.com/en/unit/UNIT-Scroll)
+- [M5Stack Reference Implementation](https://github.com/m5stack/M5Unit-Scroll)
 - [M5Stack Official Site](https://m5stack.com/)
