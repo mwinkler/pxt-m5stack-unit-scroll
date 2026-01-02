@@ -101,14 +101,14 @@ Default I2C address is 0x40 (64 in decimal). The extension uses a single unified
 
 ## Examples
 
-### Volume Control with LED Feedback, delta: number) => {
+### Volume Control with LED Feedback
+
+```typescript
+m5scroll.onEncoderChange((value: number, delta: number) => {
     // Use encoder value as volume level
     let volume = Math.map(value, 0, 65535, 0, 100)
     console.log("Volume: " + volume + "%")
-    console.log("Changed by: " + delta=> {
-    // Use encoder value as volume level
-    let volume = Math.map(value, 0, 65535, 0, 100)
-    console.log("Volume: " + volume + "%")
+    console.log("Changed by: " + delta)
     
     // Color LED based on volume
     if (volume < 33) {
@@ -124,7 +124,11 @@ Default I2C address is 0x40 (64 in decimal). The extension uses a single unified
 ### Button Click Detection
 
 ```typescript
-m5scroll.onButtonturnLEDOff()  // Off when released
+m5scroll.onButton((pressed: boolean) => {
+    if (pressed) {
+        m5scroll.setLEDColor(0x0000FF)  // Blue when pressed
+    } else {
+        m5scroll.turnLEDOff()  // Off when released
     }
 })
 ```
@@ -139,10 +143,6 @@ m5scroll.onEncoderChange((value: number, delta: number) => {
     } else if (delta < 0) {
         console.log("Turned counter-clockwise by " + delta)
         m5scroll.setLEDColor(0xFF0000)  // Red for counter-clockwise
-    if (pressed) {
-        m5scroll.setLEDColor(0x0000FF)  // Blue when pressed
-    } else {
-        m5scroll.setLEDColor(0x00FF00)  // Green when released
     }
 })
 ```
