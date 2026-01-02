@@ -1,4 +1,4 @@
-//% color="#0079B9" icon="\uf0d0" block="M5 Scroll"
+//% color="#0079B9" icon="\uf25d" block="M5 Scroll"
 namespace m5scroll {
     // I2C address and registers
     const SCROLL_ADDR = 0x40;
@@ -13,6 +13,20 @@ namespace m5scroll {
     const I2C_ADDRESS_REG = 0xFF;
 
     let _addr: number = SCROLL_ADDR;
+
+    // Event handling
+    export enum ButtonEvent {
+        //% block="pressed"
+        Pressed = 1,
+        //% block="released"
+        Released = 2
+    }
+
+    let _buttonState: boolean = false;
+    let _onButtonHandler: (pressed: boolean) => void = null;
+    let _previousEncoderValue: number = 0;
+    let _onEncoderChangeHandler: (value: number) => void = null;
+    let _controlLoopStarted: boolean = false;
 
     /**
      * Write a byte to a register
@@ -42,6 +56,47 @@ namespace m5scroll {
     function readBytes(reg: number, length: number): Buffer {
         pins.i2cWriteNumber(_addr, reg, NumberFormat.UInt8BE);
         return pins.i2cReadBuffer(_addr, length);
+    }
+
+    /**
+     * Start the background control loop for button events
+     */
+    function startControlLoop(): void {
+        if (_controlLoopStarted) {
+            return;
+        }
+        _controlLoopStarted = true;
+        control.inBackground(() => {
+            while (true) {
+                let currentState = getButtonStatus();
+                
+                // Detect state change from released to pressed
+                if (currentState && !_buttonState) {
+                    _buttonState = true;
+                    if (_onButtonHandler) {
+                        _onButtonHandler(true);
+                    }
+                }
+                // Detect state change from pressed to released
+                else if (!currentState && _buttonState) {
+                    _buttonState = false;
+                    if (_onButtonHandler) {
+                        _onButtonHandler(false);
+                    }
+                }
+                
+                // Check for encoder value change
+                let currentEncoderValue = getEncoderValue();
+                if (currentEncoderValue != _previousEncoderValue) {
+                    _previousEncoderValue = currentEncoderValue;
+                    if (_onEncoderChangeHandler) {
+                        _onEncoderChangeHandler(currentEncoderValue);
+                    }
+                }
+                
+                basic.pause(50);
+            }
+        });
     }
 
     /**
@@ -128,5 +183,33 @@ namespace m5scroll {
     //% blockGap=8
     export function resetEncoder(): void {
         writeReg(RESET_REG, 1);
+    }
+
+    /**
+     * Register handler for button events
+     * @param handler code to run when button state changes, receives true when pressed, false when released
+     */
+    //% blockId=m5scroll_on_button
+    //% block="on button $pressed"
+    //% draggableParameters="reporter"
+    //% weight=55
+    //% blockGap=8
+    export function onButton(handler: (pressed: boolean) => void): void {
+        _onButtonHandler = handler;
+        startControlLoop();
+    }
+
+    /**
+     * Register handler for encoder value changes
+     * @param handler code to run when encoder value changes, receives the new encoder value
+     */
+    //% blockId=m5scroll_on_encoder_change
+    //% block="on encoder value $value"
+    //% draggableParameters="reporter"
+    //% weight=50
+    //% blockGap=8
+    export function onEncoderChange(handler: (value: number) => void): void {
+        _onEncoderChangeHandler = handler;
+        startControlLoop();
     }
 }
