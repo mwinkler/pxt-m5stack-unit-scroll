@@ -46,8 +46,8 @@ m5scroll.onButton((pressed: boolean) => {
 })
 
 // Handle encoder changes
-m5scroll.onEncoderChange((value: number) => {
-    console.log("Encoder value: " + value)
+m5scroll.onEncoderChange((value: number, delta: number) => {
+    console.log("Encoder value: " + value + " Delta: " + delta)
 })
 ```
 
@@ -68,11 +68,12 @@ m5scroll.onEncoderChange((value: number) => {
 ### LED Functions
 
 - `setLEDColor(color)`: Set RGB LED color using hex color value
+- `turnLEDOff()`: Turn off the LED
 
 ### Event Handlers
 
 - `onButton(handler)`: Called when button is pressed (true) or released (false)
-- `onEncoderChange(handler)`: Called when encoder value changes, receives new value
+- `onEncoderChange(handler)`: Called when encoder value changes, receives new value and delta change
 
 ## LED Colors
 
@@ -86,6 +87,9 @@ m5scroll.setLEDColor(0xFFFF00)  // Yellow
 m5scroll.setLEDColor(0xFF00FF)  // Magenta
 m5scroll.setLEDColor(0x00FFFF)  // Cyan
 m5scroll.setLEDColor(0xFFFFFF)  // White
+
+// Or use the convenience function
+m5scroll.turnLEDOff()  // Turn off LED
 m5scroll.setLEDColor(0x000000)  // Off/Black
 ```
 
@@ -97,10 +101,11 @@ Default I2C address is 0x40 (64 in decimal). The extension uses a single unified
 
 ## Examples
 
-### Volume Control with LED Feedback
-
-```typescript
-m5scroll.onEncoderChange((value: number) => {
+### Volume Control with LED Feedback, delta: number) => {
+    // Use encoder value as volume level
+    let volume = Math.map(value, 0, 65535, 0, 100)
+    console.log("Volume: " + volume + "%")
+    console.log("Changed by: " + delta=> {
     // Use encoder value as volume level
     let volume = Math.map(value, 0, 65535, 0, 100)
     console.log("Volume: " + volume + "%")
@@ -119,7 +124,21 @@ m5scroll.onEncoderChange((value: number) => {
 ### Button Click Detection
 
 ```typescript
-m5scroll.onButton((pressed: boolean) => {
+m5scroll.onButtonturnLEDOff()  // Off when released
+    }
+})
+```
+
+### Directional Control Using Delta
+
+```typescript
+m5scroll.onEncoderChange((value: number, delta: number) => {
+    if (delta > 0) {
+        console.log("Turned clockwise by " + delta)
+        m5scroll.setLEDColor(0x00FF00)  // Green for clockwise
+    } else if (delta < 0) {
+        console.log("Turned counter-clockwise by " + delta)
+        m5scroll.setLEDColor(0xFF0000)  // Red for counter-clockwise
     if (pressed) {
         m5scroll.setLEDColor(0x0000FF)  // Blue when pressed
     } else {

@@ -13,19 +13,10 @@ namespace m5scroll {
     const I2C_ADDRESS_REG = 0xFF;
 
     let _addr: number = SCROLL_ADDR;
-
-    // Event handling
-    export enum ButtonEvent {
-        //% block="pressed"
-        Pressed = 1,
-        //% block="released"
-        Released = 2
-    }
-
     let _buttonState: boolean = false;
     let _onButtonHandler: (pressed: boolean) => void = null;
     let _previousEncoderValue: number = 0;
-    let _onEncoderChangeHandler: (value: number) => void = null;
+    let _onEncoderChangeHandler: (value: number, delta: number) => void = null;
     let _controlLoopStarted: boolean = false;
 
     /**
@@ -88,9 +79,10 @@ namespace m5scroll {
                 // Check for encoder value change
                 let currentEncoderValue = getEncoderValue();
                 if (currentEncoderValue != _previousEncoderValue) {
+                    let delta = currentEncoderValue - _previousEncoderValue;
                     _previousEncoderValue = currentEncoderValue;
                     if (_onEncoderChangeHandler) {
-                        _onEncoderChangeHandler(currentEncoderValue);
+                        _onEncoderChangeHandler(currentEncoderValue, delta);
                     }
                 }
                 
@@ -162,6 +154,18 @@ namespace m5scroll {
     }
 
     /**
+     * Turn off the LED
+     */
+    //% blockId=m5scroll_led_off
+    //% group="LED"
+    //% block="turn LED off"
+    //% weight=70
+    //% blockGap=8
+    export function turnLEDOff(): void {
+        setLEDColor(0x000000);
+    }
+
+    /**
      * Set the encoder value
      * @param value encoder value to set
      */
@@ -207,16 +211,15 @@ namespace m5scroll {
     }
 
     /**
-     * Register handler for encoder value changes
-     * @param handler code to run when encoder value changes, receives the new encoder value
+     * Register handler for encoder value changes and delta change
      */
     //% blockId=m5scroll_on_encoder_change
-    //% block="on encoder value $value"
+    //% block="on encoder value $value delta $delta"
     //% group="Encoder"
     //% draggableParameters="reporter"
     //% weight=50
     //% blockGap=8
-    export function onEncoderChange(handler: (value: number) => void): void {
+    export function onEncoderChange(handler: (value: number, delta: number) => void): void {
         _onEncoderChangeHandler = handler;
         startControlLoop();
     }
