@@ -1,4 +1,4 @@
-//% color="#0079B9" icon="\uf25d" block="M5 Scroll"
+//% color="#0079B9" icon="\uf021" block="M5 Scroll"
 namespace m5scroll {
     // I2C address and registers
     const SCROLL_ADDR = 0x40;
