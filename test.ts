@@ -3,6 +3,7 @@ m5scroll.onEncoderChange(function (value, delta) {
 })
 m5scroll.onButton(function (pressed) {
     if (pressed) {
+        m5scroll.setEncoderValue(100)
         m5scroll.setLEDColor(0x00ff00)
     } else {
         m5scroll.setLEDColor(0x00ffff)
